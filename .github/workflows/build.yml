@@ -1,6 +1,5 @@
 name: Build Template
 on:
-  # https://docs.github.com/en/actions/reference/events-that-trigger-workflows#workflow_dispatch
   workflow_dispatch:
   schedule:
     - cron: '0 18 * * 5'
@@ -14,12 +13,13 @@ jobs:
   build:
     runs-on: ubuntu-latest
     env:
-      PROJECT_NAME: mytemplate
+      PROJECT_NAME: my-project
     steps:
       - uses: actions/checkout@v4
       - uses: cargo-generate/cargo-generate-action@latest
         with:
           name: ${{ env.PROJECT_NAME }}
+          template: http-client-template
       - uses: dtolnay/rust-toolchain@stable
         with:
           toolchain: stable
