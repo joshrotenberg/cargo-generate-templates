@@ -1,13 +1,23 @@
 use thiserror::Error;
+use serde::Deserialize;
+
+pub type Result<T, E = Error> = std::result::Result<T, E>;
 
 #[derive(Error, Debug)]
 pub enum Error {
-    #[error("data store disconnected")]
-    Disconnect(#[from] io::Error),
-    #[error("the data for key `{0}` is not available")]
-    Redaction(String),
-    #[error("invalid header (expected {expected:?}, found {found:?})")]
-    InvalidHeader { expected: String, found: String },
-    #[error("unknown data store error")]
+    #[error("API error: {0}")]
+    APIError(ApiError),
+    #[error("Unknown error")]
     Unknown,
+}
+#[derive(Debug, Deserialize, Clone)]
+#[non_exhaustive]
+pub struct ApiError {
+    pub message: String,
+}
+
+impl std::fmt::Display for ApiError {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{}", self.message)
+    }
 }
